@@ -1,16 +1,123 @@
+// ---------- Users ----------
 enum AuthProvider {
-  CREDENTIAL
+  CREDENTIALS
   GOOGLE
 }
 
 enum UserRole {
   TENANT
-  OWNER
-  ADMIN
+  SUPER_ADMIN
 }
 
 enum UserStatus {
   ACTIVE
-  BLOCKED
-  DELETED
+  INVITED
+  DISABLED
+}
+
+// ---------- Companies ----------
+enum CompanyStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum MemberRole {
+  OWNER
+  DEPARTMENT_ADMIN
+  EMPLOYEE
+}
+
+enum MemberStatus {
+  INVITED
+  ACTIVE
+  REMOVED
+}
+
+// Used by departments, units and products
+enum ActiveStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// ---------- People ----------
+enum EmployeeStatus {
+  ACTIVE
+  ON_LEAVE
+  TERMINATED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  HALF_DAY
+  ON_LEAVE
+}
+
+enum PayrollStatus {
+  DRAFT
+  APPROVED
+  PAID
+}
+
+// ---------- Products, sales, production ----------
+enum ProductType {
+  FINISHED_GOOD
+  RAW_MATERIAL
+  SERVICE
+}
+
+enum SalesOrderStatus {
+  DRAFT
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+enum ProductionStatus {
+  PLANNED
+  COMPLETED
+  CANCELLED
+}
+
+enum StockMovementType {
+  PRODUCTION_IN
+  SALE_OUT
+  WASTE
+  ADJUSTMENT
+}
+
+// ---------- Money ----------
+enum TransactionType {
+  REVENUE
+  EXPENSE
+}
+
+enum TransactionSource {
+  MANUAL
+  PAYROLL
+  SALES_ORDER
+}
+
+enum TransactionStatus {
+  POSTED
+  VOID
+}
+
+// no categories table in the 15-table version
+// Adding a category later needs a migration.
+
+enum TransactionCategory {
+  SALES
+  SERVICE_INCOME
+  OTHER_INCOME
+  SALARY
+  RENT
+  ELECTRICITY
+  MARKETING
+  TRANSPORT
+  RAW_MATERIAL
+  OTHER_EXPENSE
 }

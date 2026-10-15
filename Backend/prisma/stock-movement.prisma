@@ -1,0 +1,24 @@
+model StockMovement {
+  id              String            @id @default(uuid())
+  companyId       String
+  productId       String
+  quantity        Decimal           @db.Decimal(14, 3) // positive = in, negative = out
+  movementType    StockMovementType
+  productionRunId String?
+  salesOrderId    String?
+  movementDate    DateTime          @db.Date
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  company       Company        @relation(fields: [companyId], references: [id])
+  product       Product        @relation(fields: [productId], references: [id])
+  productionRun ProductionRun? @relation(fields: [productionRunId], references: [id])
+  salesOrder    SalesOrder?    @relation(fields: [salesOrderId], references: [id])
+
+  @@index([companyId, productId])
+  @@index([productionRunId])
+  @@index([salesOrderId])
+  @@index([companyId, movementDate])
+  @@map("stock_movements")
+}

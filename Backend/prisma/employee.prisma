@@ -1,0 +1,30 @@
+model Employee {
+  id           String         @id @default(uuid())
+  companyId    String
+  memberId     String?        @unique // set only if this employee has a login
+  employeeCode String         @db.VarChar(50)
+  name         String         @db.VarChar(255)
+  departmentId String
+  unitId       String?
+  jobTitle     String?        @db.VarChar(100)
+  hireDate     DateTime       @db.Date
+  endDate      DateTime?      @db.Date
+  baseSalary   Decimal        @db.Decimal(14, 2)
+  status       EmployeeStatus @default(ACTIVE)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  // Relations
+  company    Company        @relation(fields: [companyId], references: [id])
+  member     CompanyMember? @relation(fields: [memberId], references: [id])
+  department Department     @relation(fields: [departmentId], references: [id])
+  unit       Unit?          @relation(fields: [unitId], references: [id])
+
+  attendances Attendance[]
+  payslips    Payslip[]
+
+  @@unique([companyId, employeeCode])
+  @@index([companyId, departmentId, status])
+  @@index([unitId])
+  @@map("employees")
+}

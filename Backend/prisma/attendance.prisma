@@ -1,0 +1,21 @@
+model Attendance {
+  id            String           @id @default(uuid())
+  companyId     String
+  employeeId    String
+  workDate      DateTime         @db.Date
+  checkIn       DateTime?        @db.Time(0)
+  checkOut      DateTime?        @db.Time(0)
+  status        AttendanceStatus
+  workedMinutes Int?
+  note          String?          @db.Text
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  // Relations
+  company  Company  @relation(fields: [companyId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, workDate]) // one row per employee per day
+  @@index([companyId, workDate])
+  @@map("attendance")
+}

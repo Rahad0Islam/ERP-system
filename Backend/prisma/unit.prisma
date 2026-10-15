@@ -1,0 +1,26 @@
+model Unit {
+  id           String       @id @default(uuid())
+  companyId    String
+  departmentId String
+  name         String       @db.VarChar(100)
+  code         String?      @db.VarChar(20)
+  leadMemberId String?
+  status       ActiveStatus @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  company    Company        @relation(fields: [companyId], references: [id])
+  department Department     @relation(fields: [departmentId], references: [id])
+  leadMember CompanyMember? @relation("UnitLead", fields: [leadMemberId], references: [id])
+
+  employees      Employee[]
+  salesOrders    SalesOrder[]
+  productionRuns ProductionRun[]
+  transactions   Transaction[]
+
+  @@unique([departmentId, name])
+  @@index([companyId])
+  @@index([leadMemberId])
+  @@map("units")
+}

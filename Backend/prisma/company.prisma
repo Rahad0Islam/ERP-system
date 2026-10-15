@@ -1,0 +1,37 @@
+model Company {
+  id              String        @id @default(uuid())
+  name            String        @db.VarChar(255)
+  slug            String        @unique @db.VarChar(100)
+  ownerId         String
+  status          CompanyStatus @default(PENDING)
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?       @db.Text
+  currency        String        @default("BDT") @db.VarChar(3)
+  timezone        String        @default("Asia/Dhaka") @db.VarChar(50)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  owner    User  @relation("CompanyOwner", fields: [ownerId], references: [id])
+  reviewer User? @relation("CompanyReviewer", fields: [reviewedById], references: [id])
+
+  members         CompanyMember[]
+  departments     Department[]
+  units           Unit[]
+  employees       Employee[]
+  attendances     Attendance[]
+  payrollRuns     PayrollRun[]
+  payslips        Payslip[]
+  products        Product[]
+  salesOrders     SalesOrder[]
+  salesOrderItems SalesOrderItem[]
+  productionRuns  ProductionRun[]
+  stockMovements  StockMovement[]
+  transactions    Transaction[]
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([reviewedById])
+  @@map("companies")
+}
