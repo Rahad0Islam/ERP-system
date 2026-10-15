@@ -19,9 +19,17 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", async (req, res) => {
-	res.send("ERP system is running");
+
+app.get("/health", async (req, res) => {
+	res.status(200).json({
+		status: "success",
+		message: "Health check successful",
+	});
 });
+app.get("/", async (req, res) => {
+	res.send("ERP system is running successfully");
+});
+
 app.use("/api/v1/auth", AuthRoutes);
 
 app.use(notFound);
