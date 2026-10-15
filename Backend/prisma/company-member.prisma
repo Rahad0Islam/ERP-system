@@ -13,7 +13,7 @@ model CompanyMember {
   company Company @relation(fields: [companyId], references: [id])
   user    User    @relation(fields: [userId], references: [id])
 
-  administeredDepartments Department[]  @relation("DepartmentAdmin")
+  administeredDepartment  Department?   @relation("DepartmentAdmin")
   ledUnits                Unit[]        @relation("UnitLead")
   employee                Employee?
   approvedPayrollRuns     PayrollRun[]  @relation("PayrollApprover")

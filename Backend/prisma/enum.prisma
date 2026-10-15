@@ -4,11 +4,6 @@ enum AuthProvider {
   GOOGLE
 }
 
-enum UserRole {
-  TENANT
-  SUPER_ADMIN
-}
-
 enum UserStatus {
   ACTIVE
   INVITED
@@ -23,6 +18,7 @@ enum CompanyStatus {
   SUSPENDED
 }
 
+// Role INSIDE one company. The platform owner is NOT here: that is users.isSuperAdmin.
 enum MemberRole {
   OWNER
   DEPARTMENT_ADMIN
@@ -106,9 +102,8 @@ enum TransactionStatus {
   VOID
 }
 
-// no categories table in the 15-table version
+// Fixed list (no categories table in the 15-table version).
 // Adding a category later needs a migration.
-
 enum TransactionCategory {
   SALES
   SERVICE_INCOME
