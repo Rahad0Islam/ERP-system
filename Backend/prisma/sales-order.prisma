@@ -1,0 +1,29 @@
+model SalesOrder {
+  id            String           @id @default(uuid())
+  companyId     String
+  orderNo       String           @db.VarChar(50)
+  customerName  String           @db.VarChar(255)
+  customerPhone String?          @db.VarChar(30)
+  departmentId  String
+  unitId        String?
+  orderDate     DateTime         @db.Date
+  status        SalesOrderStatus @default(DRAFT)
+  totalAmount   Decimal          @default(0) @db.Decimal(14, 2)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  // Relations
+  company    Company    @relation(fields: [companyId], references: [id])
+  department Department @relation(fields: [departmentId], references: [id])
+  unit       Unit?      @relation(fields: [unitId], references: [id])
+
+  items          SalesOrderItem[]
+  stockMovements StockMovement[]
+  transactions   Transaction[]
+
+  @@unique([companyId, orderNo])
+  @@index([companyId, status, orderDate])
+  @@index([departmentId])
+  @@index([unitId])
+  @@map("sales_orders")
+}

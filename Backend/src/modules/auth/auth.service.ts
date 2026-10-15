@@ -143,7 +143,7 @@ const verifyUserEmail = async (payload: IverifyEmailPayload) => {
 			password: userData.password,
 			userStatus: UserStatus.ACTIVE,
 			emailVerified: true,
-			authProvider: AuthProvider.CREDENTIAL,
+			authProvider: AuthProvider.CREDENTIALS,
 		},
 		omit: { password: true },
 	});
@@ -200,8 +200,8 @@ const loginUser = async (payload: ILoginUserPayload) => {
 		throw new AppError(httpStatus.NOT_FOUND, "User not found");
 	}
 
-	if (user.userStatus === UserStatus.BLOCKED) {
-		throw new AppError(400, "User is blocked");
+	if (user.userStatus === UserStatus.DISABLED) {
+		throw new AppError(400, "User is disabled");
 	}
 
 	if (user.userStatus === UserStatus.DELETED) {
@@ -365,13 +365,13 @@ const googleLogin = async (payload: googleLoginPayload) => {
 		const isUserExistsWithCredentials = await prisma.user.findUnique({
 			where: {
 				email: googleIdTokenPayload.email,
-				authProvider: AuthProvider.CREDENTIAL,
+				authProvider: AuthProvider.CREDENTIALS,
 			},
 		});
 
 		if (isUserExistsWithCredentials) {
-			if (isUserExistsWithCredentials.userStatus === UserStatus.BLOCKED) {
-				throw new AppError(httpStatus.FORBIDDEN, "User is blocked");
+			if (isUserExistsWithCredentials.userStatus === UserStatus.DISABLED) {
+				throw new AppError(httpStatus.FORBIDDEN, "User is disabled");
 			}
 			if (isUserExistsWithCredentials.userStatus === UserStatus.DELETED) {
 				throw new AppError(httpStatus.NOT_FOUND, "User is deleted");
@@ -423,8 +423,8 @@ const googleLogin = async (payload: googleLoginPayload) => {
 	if (!user) {
 		throw new Error("User not found or created");
 	}
-	if (user?.userStatus === UserStatus.BLOCKED) {
-		throw new AppError(httpStatus.FORBIDDEN, "User is blocked");
+	if (user?.userStatus === UserStatus.DISABLED) {
+		throw new AppError(httpStatus.FORBIDDEN, "User is disabled");
 	}
 	if (user.userStatus === UserStatus.DELETED) {
 		throw new AppError(httpStatus.NOT_FOUND, "User is deleted");
@@ -468,8 +468,8 @@ const forgotPassword = async (payload: IforgotPasswordPayload) => {
 	if (!user.emailVerified) {
 		throw new AppError(httpStatus.BAD_REQUEST, "User email is not verified");
 	}
-	if (user.userStatus === UserStatus.BLOCKED) {
-		throw new AppError(httpStatus.FORBIDDEN, "User is blocked");
+	if (user.userStatus === UserStatus.DISABLED) {
+		throw new AppError(httpStatus.FORBIDDEN, "User is disabled");
 	}
 	if (user.userStatus === UserStatus.DELETED) {
 		throw new AppError(httpStatus.NOT_FOUND, "User is deleted");
@@ -525,8 +525,8 @@ const resetPassword = async (payload: IResetPasswordPayload) => {
 	if (!user.emailVerified) {
 		throw new AppError(httpStatus.BAD_REQUEST, "User email is not verified");
 	}
-	if (user.userStatus === UserStatus.BLOCKED) {
-		throw new AppError(httpStatus.FORBIDDEN, "User is blocked");
+	if (user.userStatus === UserStatus.DISABLED) {
+		throw new AppError(httpStatus.FORBIDDEN, "User is disabled");
 	}
 	if (user.userStatus === UserStatus.DELETED) {
 		throw new AppError(httpStatus.NOT_FOUND, "User is deleted");

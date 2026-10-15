@@ -1,0 +1,27 @@
+model Payslip {
+  id           String   @id @default(uuid())
+  companyId    String
+  payrollRunId String
+  employeeId   String
+  departmentId String   // copied from the employee at payroll time
+  baseSalary   Decimal  @db.Decimal(14, 2) // copied from the employee at payroll time
+  daysPresent  Decimal  @default(0) @db.Decimal(5, 1) // decimal so a half day can count as 0.5
+  daysAbsent   Decimal  @default(0) @db.Decimal(5, 1)
+  allowances   Decimal  @default(0) @db.Decimal(14, 2)
+  deductions   Decimal  @default(0) @db.Decimal(14, 2)
+  netPay       Decimal  @db.Decimal(14, 2) // baseSalary + allowances - deductions
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  company    Company    @relation(fields: [companyId], references: [id])
+  payrollRun PayrollRun @relation(fields: [payrollRunId], references: [id])
+  employee   Employee   @relation(fields: [employeeId], references: [id])
+  department Department @relation(fields: [departmentId], references: [id])
+
+  @@unique([payrollRunId, employeeId]) // one payslip per employee per run
+  @@index([companyId])
+  @@index([employeeId])
+  @@index([departmentId])
+  @@map("payslips")
+}

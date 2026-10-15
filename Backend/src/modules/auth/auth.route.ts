@@ -3,7 +3,6 @@ import { auth } from "../../middleware/checkAuth";
 import { AuthController } from "./auth.controller";
 import { authValidation } from "./auth.validation";
 import { validateRequestBody } from "../../middleware/validateRequest";
-import { UserRole } from "../../../generated/prisma/client";
 
 const router = Router();
 
@@ -27,7 +26,7 @@ router.post(
 );
 router.get(
 	"/me",
-	auth(UserRole.ADMIN, UserRole.OWNER, UserRole.TENANT),
+	auth(),
 	AuthController.getMe,
 );
 router.post("/refresh-token", AuthController.refreshToken);

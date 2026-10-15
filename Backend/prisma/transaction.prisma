@@ -1,0 +1,35 @@
+model Transaction {
+  id              String              @id @default(uuid())
+  companyId       String
+  type            TransactionType
+  category        TransactionCategory
+  departmentId    String?             // empty = company-wide
+  unitId          String?
+  amount          Decimal             @db.Decimal(14, 2) // always positive, type gives the direction
+  currency        String              @db.VarChar(3)
+  transactionDate DateTime            @db.Date
+  description     String?             @db.Text
+  source          TransactionSource   @default(MANUAL)
+  payrollRunId    String?
+  salesOrderId    String?
+  status          TransactionStatus   @default(POSTED)
+  createdById     String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  // Relations
+  company    Company        @relation(fields: [companyId], references: [id])
+  department Department?    @relation(fields: [departmentId], references: [id])
+  unit       Unit?          @relation(fields: [unitId], references: [id])
+  payrollRun PayrollRun?    @relation(fields: [payrollRunId], references: [id])
+  salesOrder SalesOrder?    @relation(fields: [salesOrderId], references: [id])
+  createdBy  CompanyMember? @relation("TransactionCreator", fields: [createdById], references: [id])
+
+  @@index([companyId, status, transactionDate])
+  @@index([companyId, departmentId, status])
+  @@index([companyId, unitId])
+  @@index([payrollRunId])
+  @@index([salesOrderId])
+  @@index([createdById])
+  @@map("transactions")
+}

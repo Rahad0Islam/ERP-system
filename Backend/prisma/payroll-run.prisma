@@ -1,0 +1,24 @@
+model PayrollRun {
+  id           String        @id @default(uuid())
+  companyId    String
+  periodStart  DateTime      @db.Date
+  periodEnd    DateTime      @db.Date
+  status       PayrollStatus @default(DRAFT)
+  totalNetPay  Decimal?      @db.Decimal(14, 2)
+  approvedById String?
+  paidAt       DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  company    Company        @relation(fields: [companyId], references: [id])
+  approvedBy CompanyMember? @relation("PayrollApprover", fields: [approvedById], references: [id])
+
+  payslips     Payslip[]
+  transactions Transaction[]
+
+  @@unique([companyId, periodStart, periodEnd]) // one run per company per period
+  @@index([companyId, status])
+  @@index([approvedById])
+  @@map("payroll_runs")
+}

@@ -1,0 +1,21 @@
+model SalesOrderItem {
+  id           String   @id @default(uuid())
+  companyId    String
+  salesOrderId String
+  productId    String
+  quantity     Decimal  @db.Decimal(14, 3)
+  unitPrice    Decimal  @db.Decimal(14, 2) // copied from product.salePrice at order time
+  lineTotal    Decimal  @db.Decimal(14, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  company    Company    @relation(fields: [companyId], references: [id])
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])
+  product    Product    @relation(fields: [productId], references: [id])
+
+  @@index([salesOrderId])
+  @@index([productId])
+  @@index([companyId])
+  @@map("sales_order_items")
+}

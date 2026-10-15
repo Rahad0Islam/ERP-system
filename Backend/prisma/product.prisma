@@ -1,0 +1,24 @@
+model Product {
+  id        String       @id @default(uuid())
+  companyId String
+  sku       String       @db.VarChar(50)
+  name      String       @db.VarChar(255)
+  type      ProductType
+  uom       String       @db.VarChar(20) // pack, kg, piece
+  salePrice Decimal?     @db.Decimal(14, 2)
+  costPrice Decimal?     @db.Decimal(14, 2)
+  status    ActiveStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  // Relations
+  company Company @relation(fields: [companyId], references: [id])
+
+  salesOrderItems SalesOrderItem[]
+  productionRuns  ProductionRun[]
+  stockMovements  StockMovement[]
+
+  @@unique([companyId, sku])
+  @@index([companyId, type])
+  @@map("products")
+}

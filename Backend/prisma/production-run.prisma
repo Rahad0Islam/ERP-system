@@ -1,0 +1,30 @@
+model ProductionRun {
+  id               String           @id @default(uuid())
+  companyId        String
+  runNo            String           @db.VarChar(50)
+  departmentId     String
+  unitId           String?
+  productId        String
+  quantityProduced Decimal          @db.Decimal(14, 3) // everything that came off the line, including waste
+  quantityWasted   Decimal          @default(0) @db.Decimal(14, 3) // the part thrown away
+  productionDate   DateTime         @db.Date
+  shift            String?          @db.VarChar(20)
+  status           ProductionStatus @default(PLANNED)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  // Relations
+  company    Company    @relation(fields: [companyId], references: [id])
+  department Department @relation(fields: [departmentId], references: [id])
+  unit       Unit?      @relation(fields: [unitId], references: [id])
+  product    Product    @relation(fields: [productId], references: [id])
+
+  stockMovements StockMovement[]
+
+  @@unique([companyId, runNo])
+  @@index([companyId, productionDate])
+  @@index([departmentId])
+  @@index([unitId])
+  @@index([productId])
+  @@map("production_runs")
+}
