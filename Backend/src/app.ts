@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-	res.send("house and roommate platform service is running");
+	res.send("ERP system is running");
 });
 app.use("/api/v1/auth", AuthRoutes);
 
