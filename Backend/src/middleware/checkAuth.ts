@@ -3,15 +3,15 @@ import type { JwtPayload } from "jsonwebtoken";
 
 import { prisma } from "../lib/prisma";
 import { catchAsync } from "../utils/catchAsync";
-import { UserRole } from "../../generated/prisma/enums";
 import config from "../config/config";
 import { jwtUtils } from "../utils/jwt";
+import { MemberRole, UserStatus } from "../../generated/prisma/enums";
 
 export interface requestUser {
 	email: string;
 	name: string;
 	userId: string;
-	role: UserRole;
+	role: MemberRole;
 }
 declare global {
 	namespace Express {
@@ -21,9 +21,8 @@ declare global {
 	}
 }
 
-// auth(UserRole.ADMIN, UserRole.USER, UserRole.AUTHOR)
-// auth() => ...requiredRoles => [UserRole.ADMIN, UserRole.USER, UserRole.AUTHOR]
-export const auth = (...requiredRoles: UserRole[]) => {
+
+export const auth = (...requiredRoles: MemberRole[]) => {
 	return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const token = req.cookies.accessToken
 			? req.cookies.accessToken
@@ -50,7 +49,8 @@ export const auth = (...requiredRoles: UserRole[]) => {
 				"Forbidden. You don't have permission to access this resource.",
 			);
 		}
-
+       
+		
 		const user = await prisma.user.findUnique({
 			where: {
 				id: userId,
@@ -64,12 +64,14 @@ export const auth = (...requiredRoles: UserRole[]) => {
 			throw new Error("User not found. Please log in again.");
 		}
 
-		if (user.userStatus === "BLOCKED") {
+		if (user.userStatus === UserStatus.DISABLED) {
 			throw new Error("Your account has been blocked. Please contact support.");
 		}
-		if (user.userStatus === "DELETED") {
+		if (user.userStatus === UserStatus.DELETED) {
 			throw new Error("Your account has been deleted. Please contact support.");
 		}
+
+
 
 		req.user = {
 			email,

@@ -1,0 +1,352 @@
+{
+  "info": {
+    "_postman_id": "42149a7c-b701-467f-814d-a9eb2cf00b50",
+    "name": "ERP system",
+    "description": "Postman requests for the authentication service. Set baseUrl and authPath to match the server configuration. The auth service currently defines routes under /api/auth by convention; update authPath if your route is mounted elsewhere.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50524295",
+    "_collection_link": "https://go.postman.co/collection/50524295-42149a7c-b701-467f-814d-a9eb2cf00b50?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{authPath}}/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{authPath}}",
+            "register"
+          ]
+        },
+        "description": "Sends a registration OTP to the supplied email address."
+      },
+      "response": []
+    },
+    {
+      "name": "Verify Email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.data?.accessToken) pm.collectionVariables.set('accessToken', json.data.accessToken);",
+              "if (json.data?.refreshToken) pm.collectionVariables.set('refreshToken', json.data.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"otp\": \"{{otp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{authPath}}/verify-email",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{authPath}}",
+            "verify-email"
+          ]
+        },
+        "description": "Verifies the registration OTP and creates the user account."
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.data?.accessToken) pm.collectionVariables.set('accessToken', json.data.accessToken);",
+              "if (json.data?.refreshToken) pm.collectionVariables.set('refreshToken', json.data.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{authPath}}/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{authPath}}",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Current User",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Refresh Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.data?.accessToken) pm.collectionVariables.set('accessToken', json.data.accessToken);",
+              "if (json.data?.refreshToken) pm.collectionVariables.set('refreshToken', json.data.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{authPath}}/refresh-token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{authPath}}",
+            "refresh-token"
+          ]
+        },
+        "description": "Uses the refreshToken cookie set by login or email verification. Postman cookie persistence must be enabled for this request."
+      },
+      "response": []
+    },
+    {
+      "name": "Google Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.data?.accessToken) pm.collectionVariables.set('accessToken', json.data.accessToken);",
+              "if (json.data?.refreshToken) pm.collectionVariables.set('refreshToken', json.data.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idToken\": \"{{googleIdToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{authPath}}/google",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{authPath}}",
+            "google"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Forgot Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{authPath}}/forgot-password",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{authPath}}",
+            "forgot-password"
+          ]
+        },
+        "description": "Sends a password-reset OTP to the user's email address."
+      },
+      "response": []
+    },
+    {
+      "name": "Reset Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"newPassword\": \"{{password}}\",\n  \"otp\": \"{{otp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{authPath}}/reset-password",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{authPath}}",
+            "reset-password"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "authPath",
+      "value": "/api/auth"
+    },
+    {
+      "key": "name",
+      "value": "Rahad Test User"
+    },
+    {
+      "key": "email",
+      "value": "rahad.test@example.com"
+    },
+    {
+      "key": "password",
+      "value": "Test@1234"
+    },
+    {
+      "key": "otp",
+      "value": "123456"
+    },
+    {
+      "key": "googleIdToken",
+      "value": "paste-google-id-token-here"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ]
+}

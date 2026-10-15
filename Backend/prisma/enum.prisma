@@ -8,6 +8,7 @@ enum UserStatus {
   ACTIVE
   INVITED
   DISABLED
+  DELETED
 }
 
 // ---------- Companies ----------
@@ -23,6 +24,7 @@ enum MemberRole {
   OWNER
   DEPARTMENT_ADMIN
   EMPLOYEE
+  SUPER_ADMIN // platform owner; set by a seed script, never by sign-up
 }
 
 enum MemberStatus {

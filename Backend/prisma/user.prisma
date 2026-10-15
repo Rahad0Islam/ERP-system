@@ -8,6 +8,7 @@ model User {
   authProvider         AuthProvider
   emailVerified        Boolean      @default(false)
   isSuperAdmin         Boolean      @default(false) // platform owner only; set by a seed script, never by sign-up
+  role                 MemberRole   @default(EMPLOYEE) // default role for new users; can be changed by an admin
   userStatus           UserStatus   @default(ACTIVE)
   needPasswordChange   Boolean      @default(false)
   profileImage         String?      @db.VarChar(255)
